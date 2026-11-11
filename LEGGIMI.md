@@ -39,14 +39,11 @@ Nome della struttura, indirizzo, telefono, email e un testo finale (es. IBAN, or
 
 ## Installazione sull'iPhone
 
-L'app va messa online **una sola volta** su un indirizzo `https://` (serve all'iPhone per scaricarla e installarla). Dopo il primo avvio funziona anche senza connessione.
+L'app è online con GitHub Pages all'indirizzo **https://dpuddu610.github.io/agenda-beb/**
+(repository: https://github.com/dpuddu610/agenda-beb). Internet serve solo per installarla; dopo il primo avvio funziona anche senza connessione.
 
-1. Caricare la cartella su un hosting gratuito, ad esempio:
-   - **Netlify Drop**: aprire https://app.netlify.com/drop e trascinarci la cartella dell'app; si ottiene un indirizzo tipo `https://nome-a-caso.netlify.app`.
-   - oppure **GitHub Pages**.
-   
-   Bastano questi file: `index.html`, `style.css`, `app.js`, `pdf.js`, `sw.js`, `manifest.webmanifest` e la cartella `icons`.
-2. Sull'iPhone aprire quell'indirizzo con **Safari**.
+1. Sull'iPhone aprire l'indirizzo con **Safari** (non Chrome: solo Safari permette l'installazione come app).
+2. Aspettare che la pagina sia caricata del tutto.
 3. Toccare **Condividi** (il quadrato con la freccia) → **Aggiungi alla schermata Home**.
 4. Aprire l'app dall'icona. Da qui in poi funziona anche in modalità aereo.
 
@@ -70,6 +67,13 @@ poi aprire http://localhost:8765 nel browser.
 
 ## Aggiornare l'app
 
-Dopo aver modificato i file, aumentare il numero di versione in `sw.js` (es. `agenda-beb-v2` → `agenda-beb-v3`) e ricaricare i file sull'hosting. L'iPhone scarica la nuova versione la prima volta che apre l'app con internet (a volte serve chiuderla e riaprirla due volte). I dati non vengono toccati.
+Dopo aver modificato i file, aumentare il numero di versione in `sw.js` (es. `agenda-beb-v4` → `agenda-beb-v5`), poi salvare e pubblicare con git:
+
+```bash
+git commit -am "Descrizione della modifica"
+git push
+```
+
+GitHub Pages aggiorna il sito in circa un minuto. L'iPhone scarica la nuova versione la prima volta che apre l'app con internet (a volte serve chiuderla e riaprirla due volte). I dati non vengono toccati.
 
 Le icone si rigenerano con `python tools/make_icons.py`.
