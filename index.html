@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Agenda B&amp;B</title>
+  <meta name="description" content="Agenda prenotazioni del B&amp;B, funziona anche senza internet.">
+  <meta name="theme-color" content="#2f6f5e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Agenda B&amp;B">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1 id="title">Prenotazioni</h1>
+  </header>
+
+  <main id="main"></main>
+
+  <button id="fab" class="fab" aria-label="Nuovo">+</button>
+
+  <nav class="tabbar">
+    <button data-view="agenda" class="active"><span class="ico">📋</span>Agenda</button>
+    <button data-view="calendario"><span class="ico">📅</span>Calendario</button>
+    <button data-view="case"><span class="ico">🏠</span>Case</button>
+    <button data-view="conti"><span class="ico">💶</span>Conti</button>
+    <button data-view="prezzi"><span class="ico">⚙️</span>Prezzi</button>
+  </nav>
+
+  <datalist id="proprietari-list"></datalist>
+
+  <!-- Scheda prenotazione -->
+  <div id="sheet" class="sheet" hidden>
+    <form id="form" class="sheet-body" autocomplete="off" novalidate>
+      <div class="sheet-head">
+        <button type="button" class="link" id="btn-cancel">Annulla</button>
+        <strong id="form-title">Nuova prenotazione</strong>
+        <button type="submit" class="link bold">Salva</button>
+      </div>
+
+      <div class="group">
+        <label class="row">
+          <span>Casa</span>
+          <select name="casaId"></select>
+        </label>
+      </div>
+
+      <div class="group">
+        <label class="row">
+          <span>Nome</span>
+          <input name="nome" type="text" placeholder="Nome e cognome" required>
+        </label>
+        <label class="row">
+          <span>Telefono</span>
+          <input name="telefono" type="tel" placeholder="facoltativo">
+        </label>
+        <div class="row">
+          <span>Colore</span>
+          <div class="colors" id="colors"></div>
+        </div>
+      </div>
+
+      <div class="group">
+        <label class="row">
+          <span>Arrivo</span>
+          <input name="arrivo" type="date" required>
+        </label>
+        <label class="row">
+          <span>Partenza</span>
+          <input name="partenza" type="date" required>
+        </label>
+        <div class="row info"><span>Notti</span><strong id="notti">–</strong></div>
+      </div>
+
+      <div class="group">
+        <div class="row">
+          <span>N. persone</span>
+          <div class="stepper">
+            <button type="button" data-step="-1" aria-label="Meno">−</button>
+            <input name="persone" type="text" inputmode="numeric" value="2" aria-label="Numero persone">
+            <button type="button" data-step="1" aria-label="Più">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="group" id="servizi-group"></div>
+
+      <div class="group">
+        <label class="row">
+          <span>Spesa giornaliera €</span>
+          <input name="prezzo" type="text" inputmode="decimal" placeholder="0,00">
+        </label>
+        <label class="row">
+          <span>Totale €</span>
+          <input name="totale" type="text" inputmode="decimal" placeholder="0,00">
+        </label>
+        <div class="row info small" id="totale-hint"></div>
+      </div>
+
+      <div class="group">
+        <label class="row switch-row"><span>Acconto versato</span><input name="haAcconto" type="checkbox" class="switch"></label>
+        <label class="row" id="row-acconto" hidden>
+          <span>Importo acconto €</span>
+          <input name="acconto" type="text" inputmode="decimal" placeholder="0,00">
+        </label>
+        <div class="row info"><span>Da saldare</span><strong id="saldo">–</strong></div>
+      </div>
+
+      <div class="group">
+        <label class="row switch-row"><span>Casa di un altro proprietario</span><input name="haProprietario" type="checkbox" class="switch"></label>
+        <div id="box-proprietario" hidden>
+          <label class="row">
+            <span>Proprietario</span>
+            <input name="proprietario" type="text" list="proprietari-list" placeholder="Nome proprietario">
+          </label>
+          <label class="row">
+            <span>Quota proprietario %</span>
+            <input name="quotaPerc" type="text" inputmode="decimal" placeholder="es. 70">
+          </label>
+          <label class="row">
+            <span>Da dare al proprietario €</span>
+            <input name="quotaProprietario" type="text" inputmode="decimal" placeholder="0,00">
+          </label>
+          <label class="row switch-row"><span>Già pagato al proprietario</span><input name="proprietarioPagato" type="checkbox" class="switch"></label>
+          <div class="row info"><span>Resta a noi</span><strong id="guadagno">–</strong></div>
+        </div>
+      </div>
+
+      <div class="group">
+        <label class="row col">
+          <span>Note</span>
+          <textarea name="note" rows="3" placeholder="facoltativo"></textarea>
+        </label>
+      </div>
+
+      <button type="button" id="btn-pdf" class="btn">📄 Riepilogo PDF per il cliente</button>
+      <div class="small muted" style="text-align:center;margin-top:6px">Salva la prenotazione e crea il PDF con le spese, da inviare al cliente.</div>
+
+      <button type="button" id="btn-delete" class="danger" hidden>Elimina prenotazione</button>
+    </form>
+  </div>
+
+  <!-- Scheda casa -->
+  <div id="sheet-casa" class="sheet" hidden>
+    <form id="form-casa" class="sheet-body" autocomplete="off" novalidate>
+      <div class="sheet-head">
+        <button type="button" class="link" id="casa-cancel">Annulla</button>
+        <strong id="casa-title">Nuova casa</strong>
+        <button type="submit" class="link bold">Salva</button>
+      </div>
+
+      <div class="group">
+        <label class="row">
+          <span>Nome casa</span>
+          <input name="nome" type="text" placeholder="es. Casa Mare" required>
+        </label>
+        <label class="row">
+          <span>Prezzo a notte €</span>
+          <input name="prezzo" type="text" inputmode="decimal" placeholder="facoltativo">
+        </label>
+        <div class="row info small">I prezzi dei servizi di questa casa si impostano nel menu Prezzi.</div>
+      </div>
+
+      <div class="group">
+        <label class="row switch-row"><span>Di un altro proprietario</span><input name="haProprietario" type="checkbox" class="switch"></label>
+        <div id="casa-box-prop" hidden>
+          <label class="row">
+            <span>Proprietario</span>
+            <input name="proprietario" type="text" list="proprietari-list" placeholder="Nome proprietario">
+          </label>
+          <label class="row">
+            <span>Quota proprietario %</span>
+            <input name="quotaPerc" type="text" inputmode="decimal" placeholder="es. 70">
+          </label>
+          <div class="row info small">Questi dati vengono proposti in automatico nelle nuove prenotazioni di questa casa.</div>
+        </div>
+      </div>
+
+      <div class="group">
+        <label class="row col">
+          <span>Note</span>
+          <textarea name="note" rows="3" placeholder="indirizzo, password Wi‑Fi, codici…"></textarea>
+        </label>
+      </div>
+
+      <button type="button" id="casa-delete" class="danger" hidden>Elimina casa</button>
+    </form>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="pdf.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
